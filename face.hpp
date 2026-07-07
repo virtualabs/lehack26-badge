@@ -14,10 +14,15 @@
 #define EYE_W               (15)
 #define EYE_H               (60)
 #define MOUTH_X             (120)
-#define MOUTH_Y             (160)
+#define MOUTH_Y             (170)
 #define MOUTH_W             (60)
 #define MOUTH_Z             (10)
 #define BG_COLOR            TFT_SKYBLUE
+
+typedef enum {
+  RIGHT,
+  LEFT
+} EyeSide;
 
 class Eye
 {
@@ -25,8 +30,8 @@ class Eye
   public:
 
     /* Constructor. */
-    Eye(int x, int y);
-    Eye(int x, int y, int w, int h);
+    Eye(EyeSide side, int x, int y, uint16_t bgColor);
+    Eye(EyeSide side, int x, int y, int w, int h, uint16_t bgColor);
 
     /* Destructor. */
     ~Eye();
@@ -37,9 +42,12 @@ class Eye
     int w(void);
     int h(void);
     void update(int x, int y, int w, int h);
+    void setBgColor(uint16_t color);
     void draw(TFT_eSprite &screen);
 
   private:
+    /* Side. */
+    EyeSide m_side;
 
     /* Eye coordinates. */
     int m_x;
@@ -48,6 +56,9 @@ class Eye
     /* Eye width and height. */
     int m_w;
     int m_h;
+
+    /* Background color. */
+    uint16_t m_bgColor;
     
 };
 
@@ -81,15 +92,16 @@ class PalFace
 {
   public:
 
-    PalFace();
+    PalFace(uint16_t bgColor);
     ~PalFace();
 
     /* Methods. */
     void draw(TFT_eSprite &screen);
+    void setBgColor(uint16_t color);
 
     /* Control face. */
     void moveEyes(int x, int y);
-    void moveMouth(int x, int y);
+    void moveMouth(int x, int y, int z);
     void changeEyes(int w, int h);
   
   private:
@@ -97,6 +109,7 @@ class PalFace
     Eye m_right_eye;
     Eye m_left_eye;
     Mouth m_mouth;
+    uint16_t m_bgColor;
 };
 
 #endif /* __INC_FACE_HPP */

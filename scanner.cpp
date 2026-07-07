@@ -7,7 +7,7 @@ BLEScan *pBLEScan;
 int nb_devices = 0;
 
 class MyAdvertisedDeviceCallbacks : public BLEAdvertisedDeviceCallbacks {
-  void onReszult(BLEAdvertisedDevice advertisedDevice) {
+  void onResult(BLEAdvertisedDevice advertisedDevice) {
     nb_devices++;
   }
 };

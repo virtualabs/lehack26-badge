@@ -35,11 +35,13 @@ const int ledChannel = 0;
 const int resolution = 8; // Résolution de 8 bits
 
 volatile int button_pressed = 0;
+volatile int idle_delay = 0;
+volatile bool happy = true;
 
 char device_report[24];
 
 TFT_eSPI tft = TFT_eSPI();
-PalFace face = PalFace();
+PalFace face = PalFace(TFT_SKYBLUE);
 Animator animator(face);
 
 TFT_eSprite buffer = TFT_eSprite(&tft);
@@ -52,6 +54,14 @@ void ARDUINO_ISR_ATTR button_handler() {
     button_pressed = 2;
   } else {
     button_pressed = 0;
+  }
+}
+
+void update_idle_delay() {
+  if (happy) {
+    idle_delay = 30 + (esp_random() % 50);
+  } else {
+    idle_delay = 5 + (esp_random() % 15);
   }
 }
 
@@ -85,48 +95,124 @@ void setup() {
   buffer.pushSprite(0, 0);  
 
   scanner_start();
+
+  update_idle_delay();
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
   frames++;
   if ((millis() - mark) > 1) {
+    
+    /* Decrement idle delay. */
+    if (idle_delay > 0)
+    {
+      idle_delay--;
+    }
+
     animator.animate();
     //if (animator.animate()) {
       face.draw(buffer);
-      snprintf(device_report, 24, "devs: %d", scanner_get_count()); 
-      buffer.drawString(device_report, 80, 80);
       buffer.pushSprite(0, 0); 
     //}
     mark = millis();
   }
 
+  if (idle_delay == 0)
+  {
+    /* Pick a random position for our face. */
+    uint32_t x = 80 + (esp_random() % 80);
+    uint32_t y = 120 + (esp_random() % 20);
+    
+    FaceState *start_state = new FaceState(
+      animator.getCurrentState().getEyesX(),
+      animator.getCurrentState().getEyesY(),
+      animator.getCurrentState().getEyesH(),
+      animator.getCurrentState().getMouthX(),
+      animator.getCurrentState().getMouthY(),
+      animator.getCurrentState().getMouthZ()
+    );
+    FaceState *end_state = new FaceState(x, y, animator.getCurrentState().getEyesH(), x, 40+y, animator.getCurrentState().getMouthZ());
+    if (happy) {
+      Transition *t = new Transition(*start_state, *end_state, 5 + (esp_random() % 10));
+      animator.setTransition(t);
+    } else {
+      Transition *t = new Transition(*start_state, *end_state, 3 + (esp_random() % 6));
+      animator.setTransition(t);
+    }
+    
+    
+    /* Select a new value for idle_delay. */
+    update_idle_delay();
+  }
+
   if (button_pressed == 2)
   {
+    button_pressed = 0;
+    if (happy) {
+      happy = false;
+      FaceState *start_state = new FaceState(
+        animator.getCurrentState().getEyesX(),
+        animator.getCurrentState().getEyesY(),
+        animator.getCurrentState().getEyesH(),
+        animator.getCurrentState().getMouthX(),
+        animator.getCurrentState().getMouthY(),
+        animator.getCurrentState().getMouthZ()
+      );
+      FaceState *end_state = new FaceState(120, 120, 25, 120, MOUTH_Y-20, -10);
+      Transition *t = new Transition(*start_state, *end_state, 2);
+      animator.setTransition(t);
+      face.setBgColor(TFT_RED);
+    } else {
+      happy = true;
+      FaceState *start_state = new FaceState(
+        animator.getCurrentState().getEyesX(),
+        animator.getCurrentState().getEyesY(),
+        animator.getCurrentState().getEyesH(),
+        animator.getCurrentState().getMouthX(),
+        animator.getCurrentState().getMouthY(),
+        animator.getCurrentState().getMouthZ()
+      );
+      FaceState *end_state = new FaceState(160, 120, EYE_H, 160, MOUTH_Y, MOUTH_Z);
+      Transition *t = new Transition(*start_state, *end_state, 5);
+      animator.setTransition(t);
+      face.setBgColor(TFT_SKYBLUE);
+    }
+
+    #if 0
     button_pressed = 0;
     FaceState *start_state = new FaceState(
       animator.getCurrentState().getEyesX(),
       animator.getCurrentState().getEyesY(),
+      animator.getCurrentState().getEyesH(),
       animator.getCurrentState().getMouthX(),
-      animator.getCurrentState().getMouthY()
+      animator.getCurrentState().getMouthY(),
+      animator.getCurrentState().getMouthZ()
     );
-    FaceState *end_state = new FaceState(160, 120, 160, MOUTH_Y);
+    FaceState *end_state = new FaceState(160, 120, EYE_H, 160, MOUTH_Y, MOUTH_Z);
     Transition *t = new Transition(*start_state, *end_state, 5);
     animator.setTransition(t);
+    #endif
   } 
+
+  #if 0
   else if (button_pressed == 1)
   {
     button_pressed = 0;
     FaceState *start_state = new FaceState(
       animator.getCurrentState().getEyesX(),
       animator.getCurrentState().getEyesY(),
+      animator.getCurrentState().getEyesH(),
       animator.getCurrentState().getMouthX(),
-      animator.getCurrentState().getMouthY()
+      animator.getCurrentState().getMouthY(),
+      animator.getCurrentState().getMouthZ()
     );
-    FaceState *end_state = new FaceState(80, 120, 80, MOUTH_Y);
-    Transition *t = new Transition(*start_state, *end_state, 5);
+    FaceState *end_state = new FaceState(120, 120, 25, 120, MOUTH_Y-20, -10);
+    Transition *t = new Transition(*start_state, *end_state, 2);
     animator.setTransition(t);
+    face.setBgColor(TFT_RED);
   }
+  #endif
 
  
   #if 0

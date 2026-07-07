@@ -1,6 +1,6 @@
 #include "animator.hpp"
 
-Animator::Animator(PalFace &face) : m_face(face), m_transition(NULL), m_state(120, 120, MOUTH_X, MOUTH_Y), oldX(0), oldY(0)
+Animator::Animator(PalFace &face) : m_face(face), m_transition(NULL), m_state(120, 120, EYE_H, MOUTH_X, MOUTH_Y, MOUTH_Z), oldX(0), oldY(0)
 {
   m_face.moveEyes(m_state.getEyesX(), m_state.getEyesY());
 }
@@ -29,7 +29,8 @@ bool Animator::animate(void)
     if ((oldX != m_state.getEyesX()) || (oldY != m_state.getEyesY()))
     {
       m_face.moveEyes(m_state.getEyesX(), m_state.getEyesY());
-      m_face.moveMouth(m_state.getMouthX(), m_state.getMouthY());
+      m_face.changeEyes(EYE_W, m_state.getEyesH());
+      m_face.moveMouth(m_state.getMouthX(), m_state.getMouthY(), m_state.getMouthZ());
       oldX = m_state.getEyesX();
       oldY = m_state.getEyesY();
       need_refresh = true;

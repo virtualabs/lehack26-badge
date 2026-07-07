@@ -5,25 +5,31 @@ class FaceState
 {
   public:
 
-    FaceState(int eyes_x, int eyes_y, int mouth_x, int mouth_y);
+    FaceState(int eyesX, int eyesY, int eyesH, int mouthX, int mouthY, int mouthZ);
     ~FaceState();
 
     int getEyesX(void);
     void setEyesX(int x);
     int getEyesY(void);
     void setEyesY(int y);
+    int getEyesH(void);
+    void setEyesH(int h);
     int getMouthX(void);
     void setMouthX(int x);
     int getMouthY(void);
     void setMouthY(int y);
+    int getMouthZ(void);
+    void setMouthZ(int z);
 
   private:
 
     /* Eye parameters. */
     int mEyesX;
     int mEyesY;
+    int mEyesH;
     int mMouthX;
     int mMouthY;
+    int mMouthZ;
     
 };
 
