@@ -14,6 +14,7 @@ class Animator
     void setTransition(Transition *pTransition);
     bool animate(void);
     FaceState &getCurrentState(void);
+    bool hasTransition(void);
 
   private:
     int oldX, oldY;

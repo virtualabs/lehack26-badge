@@ -51,3 +51,8 @@ FaceState &Animator::getCurrentState(void)
 {
   return m_state;
 }
+
+bool Animator::hasTransition(void)
+{
+  return m_transition != NULL;
+}
