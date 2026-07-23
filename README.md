@@ -18,6 +18,6 @@ This badge has been designed to use a 1200 mAh 103040 Li-ion battery to keep it 
 Its assembly requires 4 M3 6mm self-taping screws to lock the two main halves of its shell in place. Two button
 caps have been designed in the shell itself, relying on the flexibility of the filament used to print these parts.
 
-!(Final assembly, as seen in FreeCAD)[https://github.com/virtualabs/lehack26-badge/blob/main/images/3d-render-badge-final.png]
-!(Exploded assembly, as seen in FreeCAD)[https://github.com/virtualabs/lehack26-badge/blob/main/images/3d-render-pcb-with-shell.png]
-!(Main PCB)[https://github.com/virtualabs/lehack26-badge/blob/main/images/badge_pcb_render.jpg]
+![Final assembly, as seen in FreeCAD](https://github.com/virtualabs/lehack26-badge/blob/main/images/3d-render-badge-final.png)
+![Exploded assembly, as seen in FreeCAD](https://github.com/virtualabs/lehack26-badge/blob/main/images/3d-render-pcb-with-shell.png)
+![Main PCB](https://github.com/virtualabs/lehack26-badge/blob/main/images/badge_pcb_render.jpg)
